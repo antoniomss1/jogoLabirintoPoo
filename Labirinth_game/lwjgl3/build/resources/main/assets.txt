@@ -1,0 +1,8 @@
+bucket2.png
+floor.png
+magoBola.png
+map.txt
+map3.txt
+mapO.txt
+wall.png
+wizard.png
