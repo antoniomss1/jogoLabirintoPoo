@@ -10,8 +10,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main implements ApplicationListener {
@@ -33,7 +35,20 @@ public class Main implements ApplicationListener {
     int cols;
 
     Sprite WizardSprite;
-//    Vector<Sprite> wallSprite;
+
+    Vector2 touchPos;
+
+    Texture floorATexture;
+    Texture floorBTexture;
+    Texture floorCTexture;
+    Texture floorDTexture;
+    Texture floorHTexture;
+    Texture floorTTexture;
+    Texture floorUTexture;
+    Texture floorVTexture;
+    Texture floorWTexture;
+    Texture floorXTexture;
+    Texture floorPTexture;
 
     @Override
     public void create() {
@@ -44,19 +59,29 @@ public class Main implements ApplicationListener {
         floorTexture = new Texture(Gdx.files.internal("floor.png"));
         WizardTexture = new Texture(Gdx.files.internal("Wizard.png"));
 
+        floorATexture = new Texture(Gdx.files.internal("floorA.png"));
+        floorBTexture = new Texture(Gdx.files.internal("floorB.png"));
+        floorCTexture = new Texture(Gdx.files.internal("floorC.png"));
+        floorDTexture = new Texture(Gdx.files.internal("floorD.png"));
+        floorHTexture = new Texture(Gdx.files.internal("floorH.png"));
+        floorTTexture = new Texture(Gdx.files.internal("floorT.png"));
+        floorUTexture = new Texture(Gdx.files.internal("floorU.png"));
+        floorVTexture = new Texture(Gdx.files.internal("floorV.png"));
+        floorWTexture = new Texture(Gdx.files.internal("floorW.png"));
+        floorXTexture = new Texture(Gdx.files.internal("floorX.png"));
+        floorPTexture = new Texture(Gdx.files.internal("floor+.png"));
         mapData = loadMap("map.txt");
 
         viewport = new FillViewport(worldWidth,worldHeight);
-
-//        viewport.getCamera().position.set(worldWidth / 2f, worldHeight / 2f, 0);
-//        viewport.getCamera().update();
+        ((OrthographicCamera)viewport.getCamera()).zoom=.3f;
 
         WizardSprite = new Sprite(WizardTexture);
         WizardSprite.setSize((float) TILE_SIZE-20, (float) TILE_SIZE-20);
         WizardSprite.setX(TILE_SIZE);
         WizardSprite.setY(worldHeight - 2* TILE_SIZE);
 
-//        wallSprite = new Vector<>(wallTexture);
+        touchPos = new Vector2();
+
     }
 
     private char[][] loadMap(String filename) {
@@ -120,113 +145,43 @@ public class Main implements ApplicationListener {
             moveY -= speed * delta;
         }
 
-        float newX = (float) (WizardSprite.getX() + moveX);
-        float newY = (float) (WizardSprite.getY() + moveY);
+        if (Gdx.input.isTouched()) { // If the user has clicked or tapped the screen
+            touchPos.set(Gdx.input.getX(), Gdx.input.getY()); // Get where the touch happened on screen
+            viewport.unproject(touchPos); // Convert the units to the world units of the viewport
+
+            float dirX = touchPos.x - WizardSprite.getX();
+            float dirY = touchPos.y - WizardSprite.getY();
+            float norma = (float) Math.sqrt(dirX * dirX + dirY * dirY);
+
+            if(norma != 0){
+                moveX += dirX / norma * speed * delta;
+                moveY += dirY / norma * speed * delta;
+            }
+        }
+
+        float newX = WizardSprite.getX() + moveX;
+        float newY = WizardSprite.getY() + moveY;
+
 
         if (!isCollidingWithWall(newX, WizardSprite.getY())) {
-        ////            WizardSprite.setX(newX);
             WizardSprite.translateX(moveX);
         }
         if (!isCollidingWithWall(WizardSprite.getX(), newY)) {
-////            WizardSprite.setY(newY);
             WizardSprite.translateY(moveY);
         }
-//        if (Gdx.input.isTouched()) { // If the user has clicked or tapped the screen
-//            touchPos.set(Gdx.input.getX(), Gdx.input.getY()); // Get where the touch happened on screen
-//            viewport.unproject(touchPos); // Convert the units to the world units of the viewport
-//            WizardSprite.setCenterX(touchPos.x); // Change the horizontally centered position of the Wizard
-//        }
+
     }
 
-    private void logic(){
+    private void logic() {
         float WizardWidth = WizardSprite.getWidth();
         float WizardHeight = WizardSprite.getHeight();
-//
-        viewport.getCamera().position.set(WizardSprite.getX()+WizardWidth/2, WizardSprite.getY()+WizardHeight/2, 0);
-//
-//
-//
-////        WizardSprite.setX(MathUtils.clamp(WizardSprite.getX(), 0, worldWidth - WizardWidth));
-////        WizardSprite.setY(MathUtils.clamp(WizardSprite.getY(), 0, worldHeight - WizardHeight));
-////
-//
-//        viewport.getCamera().position.set(WizardSprite.getX()+WizardWidth/2, WizardSprite.getY()+WizardHeight/2, 0);
-//        float speed = TILE_SIZE*6;
-//        float delta = Gdx.graphics.getDeltaTime();
-//        float moveX = 0;
-//        float moveY = 0;
-//
-//        if(Gdx.input.isKeyPressed(Input.Keys.W)){
-//            ((OrthographicCamera)viewport.getCamera()).zoom-=.01f;
-//        }
-//        else if(Gdx.input.isKeyPressed(Input.Keys.S)){
-//            ((OrthographicCamera)viewport.getCamera()).zoom+=.01f;
-//        }
-//
-//        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-//            moveX += speed * delta;
-//        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-//            moveX -= speed * delta;
-//        }
-//
-//        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-//            moveY += speed * delta;
-//        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-//            moveY -= speed * delta;
-//        }
-//
-//        // Calcula nova posição
-//        float newX = WizardSprite.getX() + moveX;
-//        float newY = WizardSprite.getY() + moveY;
-//
-//        // Verifica colisão
-////        if (!isCollidingWithWall(newX, WizardSprite.getY())) {
-//////            WizardSprite.setX(newX);
-//            WizardSprite.translateX(moveX);
-////        }
-////        if (!isCollidingWithWall(WizardSprite.getX(), newY)) {
-//////            WizardSprite.setY(newY);
-//            WizardSprite.translateY(moveY);
-////        }
-////        WizardSprite.setX(MathUtils.clamp(WizardSprite.getX(), 0, worldWidth - WizardWidth));
-////        WizardSprite.setY(MathUtils.clamp(WizardSprite.getY(), 0, worldHeight - WizardHeight));
+        viewport.getCamera().position.set(WizardSprite.getX() + WizardWidth / 2, WizardSprite.getY() + WizardHeight / 2, 0);
 
     }
 
-//    private void input() {
-//        float speed = 400f;
-//        float delta = Gdx.graphics.getDeltaTime();
-//        float moveX = 0;
-//        float moveY = 0;
-//
-//        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-//            moveX += speed * delta;
-//        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-//            moveX -= speed * delta;
-//        }
-//
-//        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-//            moveY += speed * delta;
-//        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-//            moveY -= speed * delta;
-//        }
-//
-//        // Calcula nova posição
-//        float newX = WizardSprite.getX() + moveX;
-//        float newY = WizardSprite.getY() + moveY;
-//
-//        // Verifica colisão
-//        if (!isCollidingWithWall(newX, WizardSprite.getY())) {
-//            WizardSprite.setX(newX);
-//        }
-//        if (!isCollidingWithWall(WizardSprite.getX(), newY)) {
-//            WizardSprite.setY(newY);
-//        }
-//    }
-
     private boolean isCollidingWithWall(float x, float y) {
-        float width = WizardSprite.getWidth();
-        float height = WizardSprite.getHeight();
+        float width = WizardSprite.getWidth()/2;
+        float height = WizardSprite.getHeight()/2;
 
         // Checa os 4 cantos do sprite
         return isWallAt(x, y) ||
@@ -242,8 +197,7 @@ public class Main implements ApplicationListener {
         if (tileX < 0 || tileX >= cols || tileY < 0 || tileY >= rows) {
             return true; // trata bordas como parede
         }
-
-        return mapData[tileY][tileX] == '#';
+        return mapData[tileY][tileX] != ' ';
     }
 
 
@@ -269,9 +223,18 @@ public class Main implements ApplicationListener {
             for (int x = 0; x < mapData[y].length; x++) {
                 Texture tex = null;
                 switch (mapData[y][x]) {
-                    case '#':
-                        tex = wallTexture;
-                        break;
+                    case 'a':tex = floorATexture;break;
+                    case 'b':tex = floorBTexture;break;
+                    case 'c':tex = floorCTexture;break;
+                    case 'd':tex = floorDTexture;break;
+                    case 'h':tex = floorHTexture;break;
+                    case 't':tex = floorTTexture;break;
+                    case 'u':tex = floorUTexture;break;
+                    case 'v':tex = floorVTexture;break;
+                    case 'w':tex = floorWTexture;break;
+                    case 'x':tex = floorXTexture;break;
+                    case '+':tex = floorPTexture;break;
+
                     case ' ':
                         tex = floorTexture;
                         break;
