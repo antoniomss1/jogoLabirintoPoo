@@ -1,3 +1,4 @@
+OLDfloorH.png
 bucket2.png
 floor+.png
 floor.png
@@ -5,7 +6,9 @@ floorA.png
 floorB.png
 floorC.png
 floorD.png
+floorE.png
 floorH.png
+floorOLD.png
 floorT.png
 floorU.png
 floorV.png
@@ -17,5 +20,7 @@ map1letras.txt
 map3.txt
 map35.txt
 mapO.txt
+porta_aberta.png
+porta_fechada.png
 wall.png
 wizard.png

@@ -49,6 +49,8 @@ public class Main implements ApplicationListener {
     Texture floorWTexture;
     Texture floorXTexture;
     Texture floorPTexture;
+    Texture floorETexture;
+    Portas portas;
 
     @Override
     public void create() {
@@ -70,7 +72,10 @@ public class Main implements ApplicationListener {
         floorWTexture = new Texture(Gdx.files.internal("floorW.png"));
         floorXTexture = new Texture(Gdx.files.internal("floorX.png"));
         floorPTexture = new Texture(Gdx.files.internal("floor+.png"));
+        floorETexture = new Texture(Gdx.files.internal("floorE.png"));
         mapData = loadMap("map.txt");
+
+        portas = new Portas();
 
         viewport = new FillViewport(worldWidth,worldHeight);
         ((OrthographicCamera)viewport.getCamera()).zoom=.3f;
@@ -78,8 +83,8 @@ public class Main implements ApplicationListener {
         WizardSprite = new Sprite(WizardTexture);
         WizardSprite.setSize((float) TILE_SIZE-20, (float) TILE_SIZE-20);
         WizardSprite.setX(TILE_SIZE);
-        WizardSprite.setY(worldHeight - 2* TILE_SIZE);
-
+//        WizardSprite.setY(worldHeight - 2* TILE_SIZE);
+        WizardSprite.setY(TILE_SIZE*2);
         touchPos = new Vector2();
 
     }
@@ -180,8 +185,8 @@ public class Main implements ApplicationListener {
     }
 
     private boolean isCollidingWithWall(float x, float y) {
-        float width = WizardSprite.getWidth()/2;
-        float height = WizardSprite.getHeight()/2;
+        float width = WizardSprite.getWidth();
+        float height = WizardSprite.getHeight();
 
         // Checa os 4 cantos do sprite
         return isWallAt(x, y) ||
@@ -218,7 +223,6 @@ public class Main implements ApplicationListener {
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
         batch.begin();
-
         for (int y = 0; y < mapData.length; y++) {
             for (int x = 0; x < mapData[y].length; x++) {
                 Texture tex = null;
@@ -227,6 +231,7 @@ public class Main implements ApplicationListener {
                     case 'b':tex = floorBTexture;break;
                     case 'c':tex = floorCTexture;break;
                     case 'd':tex = floorDTexture;break;
+                    case 'e':tex = floorETexture;break;
                     case 'h':tex = floorHTexture;break;
                     case 't':tex = floorTTexture;break;
                     case 'u':tex = floorUTexture;break;
@@ -244,7 +249,8 @@ public class Main implements ApplicationListener {
                 }
             }
         }
-//        batch.draw(WizardTexture, 0, 0);
+
+        portas.draw(batch);
         WizardSprite.draw(batch);
 
         batch.end();
