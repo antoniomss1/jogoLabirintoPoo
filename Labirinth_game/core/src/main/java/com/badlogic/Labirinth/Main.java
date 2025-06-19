@@ -24,10 +24,10 @@ public class Main implements ApplicationListener {
     Texture floorTexture;
     Texture WizardTexture;
 
-    char[][] mapData;
-    final int TILE_SIZE = 64;
-    int worldWidth;
-    int worldHeight;
+    public char[][] mapData;
+    public final int TILE_SIZE = 64;
+    public int worldWidth;
+    public int worldHeight;
 
     FillViewport viewport;
 
@@ -52,6 +52,8 @@ public class Main implements ApplicationListener {
     Texture floorETexture;
     Portas portas;
 
+    private boolean wasTouched = false;
+
     @Override
     public void create() {
         // Prepare your application here.
@@ -75,7 +77,7 @@ public class Main implements ApplicationListener {
         floorETexture = new Texture(Gdx.files.internal("floorE.png"));
         mapData = loadMap("map.txt");
 
-        portas = new Portas();
+        portas = new Portas(mapData, rows, cols);
 
         viewport = new FillViewport(worldWidth,worldHeight);
         ((OrthographicCamera)viewport.getCamera()).zoom=.3f;
@@ -150,18 +152,31 @@ public class Main implements ApplicationListener {
             moveY -= speed * delta;
         }
 
-        if (Gdx.input.isTouched()) { // If the user has clicked or tapped the screen
-            touchPos.set(Gdx.input.getX(), Gdx.input.getY()); // Get where the touch happened on screen
-            viewport.unproject(touchPos); // Convert the units to the world units of the viewport
-
-            float dirX = touchPos.x - WizardSprite.getX();
-            float dirY = touchPos.y - WizardSprite.getY();
-            float norma = (float) Math.sqrt(dirX * dirX + dirY * dirY);
-
-            if(norma != 0){
-                moveX += dirX / norma * speed * delta;
-                moveY += dirY / norma * speed * delta;
+        if (Gdx.input.isTouched()) {
+            if (!wasTouched) {
+                touchPos.set(Gdx.input.getX(), Gdx.input.getY());
+                viewport.unproject(touchPos);
+                int portaClicada = portas.getClickedDoor(touchPos.x, touchPos.y);
+                portas.invertDoor(portaClicada, mapData);
+                wasTouched = true;
             }
+
+            //codigo para movimentação com o mouse:
+//            touchPos.set(Gdx.input.getX(), Gdx.input.getY()); // Get where the touch happened on screen
+//            viewport.unproject(touchPos); // Convert the units to the world units of the viewport
+//
+//            float dirX = touchPos.x - WizardSprite.getX();
+//            float dirY = touchPos.y - WizardSprite.getY();
+//            float norma = (float) Math.sqrt(dirX * dirX + dirY * dirY);
+//
+//            if(norma != 0){
+//                moveX += dirX / norma * speed * delta;
+//                moveY += dirY / norma * speed * delta;
+//            }
+
+
+        } else {
+            wasTouched = false; // apenas aqui reseta o toque
         }
 
         float newX = WizardSprite.getX() + moveX;
@@ -194,6 +209,27 @@ public class Main implements ApplicationListener {
             isWallAt(x, y + height) ||
             isWallAt(x + width, y + height);
     }
+
+//    private boolean isWallAt(float x, float y) {
+//        int tileX = (int)(x / TILE_SIZE);
+//        int tileY = mapData.length - 1 - (int)(y / TILE_SIZE); // cuidado com a inversão Y
+//
+//        if (tileX < 0 || tileX >= cols || tileY < 0 || tileY >= rows) {
+//            return true; // borda é parede
+//        }
+//
+//        char tile = mapData[tileY][tileX];
+//
+//        if(tile!=' '){
+//            if(tile == '/'){
+//                return false;
+//            }
+//            return true;
+//        }
+//        return false;
+////        return tile == '#' || tile == '\\'; // bloqueia parede e porta FECHADA
+//    }
+
 
     private boolean isWallAt(float x, float y) {
         int tileX = (int)(x / TILE_SIZE);

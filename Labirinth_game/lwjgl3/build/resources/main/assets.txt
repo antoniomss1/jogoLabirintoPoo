@@ -8,7 +8,6 @@ floorC.png
 floorD.png
 floorE.png
 floorH.png
-floorOLD.png
 floorT.png
 floorU.png
 floorV.png
