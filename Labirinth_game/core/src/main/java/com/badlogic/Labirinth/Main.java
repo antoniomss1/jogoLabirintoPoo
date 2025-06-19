@@ -50,6 +50,9 @@ public class Main implements ApplicationListener {
     Texture floorXTexture;
     Texture floorPTexture;
     Texture floorETexture;
+    Texture floorGTexture;
+    Texture floorFTexture;
+    Texture floorITexture;
     Portas portas;
 
     private boolean wasTouched = false;
@@ -75,6 +78,9 @@ public class Main implements ApplicationListener {
         floorXTexture = new Texture(Gdx.files.internal("floorX.png"));
         floorPTexture = new Texture(Gdx.files.internal("floor+.png"));
         floorETexture = new Texture(Gdx.files.internal("floorE.png"));
+        floorGTexture = new Texture(Gdx.files.internal("floorG.png"));
+        floorFTexture = new Texture(Gdx.files.internal("floorF.png"));
+        floorITexture = new Texture(Gdx.files.internal("floorI.png"));
         mapData = loadMap("map.txt");
 
         portas = new Portas(mapData, rows, cols);
@@ -275,6 +281,9 @@ public class Main implements ApplicationListener {
                     case 'w':tex = floorWTexture;break;
                     case 'x':tex = floorXTexture;break;
                     case '+':tex = floorPTexture;break;
+                    case 'g':tex = floorGTexture;break;
+                    case 'f':tex = floorFTexture;break;
+                    case 'i':tex = floorITexture;break;
 
                     case ' ':
                         tex = floorTexture;

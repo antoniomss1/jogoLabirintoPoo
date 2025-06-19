@@ -1,5 +1,4 @@
 OLDfloorH.png
-bucket2.png
 floor+.png
 floor.png
 floorA.png
@@ -7,7 +6,10 @@ floorB.png
 floorC.png
 floorD.png
 floorE.png
+floorF.png
+floorG.png
 floorH.png
+floorI.png
 floorT.png
 floorU.png
 floorV.png
