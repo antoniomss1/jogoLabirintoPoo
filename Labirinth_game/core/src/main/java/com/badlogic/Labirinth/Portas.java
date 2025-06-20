@@ -21,8 +21,12 @@ public class Portas {
     private int[] posX;
     private int[] posY;
 
+//    char[][] mapData, int rows, int cols
+    public Portas() {
+        char[][] mapData = Mapa.getInstance().getDadosDoMapa();
+        int rows = mapData.length;
+        int cols = mapData[0].length;
 
-    public Portas(char[][] mapData, int rows, int cols) {
         texturaAberta = new Texture("porta_aberta.png");
         texturaFechada = new Texture("porta_fechada.png");
 
@@ -69,33 +73,6 @@ public class Portas {
         }
     }
 
-//
-//    public Portas(char [][] mapData, int rows, int cols) {
-//        texturaAberta = new Texture("porta_aberta.png");
-//        texturaFechada = new Texture("porta_fechada.png");
-//
-//        sprites = new Sprite[size];
-//        estados = new boolean[size];
-//
-//        posX = new int[size];
-//        posY = new int[size];
-//
-//        for (int i = 0; i < size; i++) {
-//            estados[i] = false; // todas começam abertas
-//
-//            if(i % 2==0){
-//                estados[i] = true;
-//                sprites[i] = new Sprite(texturaFechada);
-//            }
-//            else{
-//                estados[i] = false;
-//                sprites[i] = new Sprite(texturaAberta);
-//            }
-//
-//            sprites[i].setPosition(i*64, i*64); // posição horizontal
-//        }
-//    }
-
     public void invertDoor(int i, char[][] mapData) {
         if (i >= 0 && i < size) {
             estados[i] = !estados[i];
@@ -106,8 +83,7 @@ public class Portas {
             mapData[y][x] = estados[i] ? ' ' : '\\'; // atualiza mapData
 
             if (i % 2 == 0 && i + 1 < size) {
-//                estados[i + 1] = false;
-//                sprites[i + 1].setTexture(texturaFechada);
+
                 estados[i + 1] = !estados[i + 1];
                 sprites[i+1].setTexture(estados[i+1] ? texturaAberta : texturaFechada);
 
@@ -117,8 +93,6 @@ public class Portas {
 
 
             } else if (i % 2 != 0 && i - 1 >= 0) {
-//                estados[i - 1] = false;
-//                sprites[i - 1].setTexture(texturaFechada);
 
                 estados[i - 1] = !estados[i-1];
                 sprites[i-1].setTexture(estados[i-1] ? texturaAberta : texturaFechada);

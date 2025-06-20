@@ -81,9 +81,17 @@ public class Main implements ApplicationListener {
         floorGTexture = new Texture(Gdx.files.internal("floorG.png"));
         floorFTexture = new Texture(Gdx.files.internal("floorF.png"));
         floorITexture = new Texture(Gdx.files.internal("floorI.png"));
-        mapData = loadMap("map.txt");
+//        mapData = loadMap("map.txt");
+        //testando singleton do mapa
+        char[][] matriz = loadMap("map.txt");
+        Mapa.iniciarMapa();
+        Mapa.getInstance().setDadosDoMapa(matriz);
 
-        portas = new Portas(mapData, rows, cols);
+        //para uso no draw
+        mapData = matriz; // Temporário, até remover o uso direto
+
+//        Mapa.getInstance().getDadosDoMapa(), rows, cols
+        portas = new Portas();
 
         viewport = new FillViewport(worldWidth,worldHeight);
         ((OrthographicCamera)viewport.getCamera()).zoom=.3f;
@@ -92,7 +100,7 @@ public class Main implements ApplicationListener {
         WizardSprite.setSize((float) TILE_SIZE-20, (float) TILE_SIZE-20);
         WizardSprite.setX(TILE_SIZE);
 //        WizardSprite.setY(worldHeight - 2* TILE_SIZE);
-        WizardSprite.setY(TILE_SIZE*2);
+        WizardSprite.setY(TILE_SIZE);
         touchPos = new Vector2();
 
     }
@@ -123,8 +131,8 @@ public class Main implements ApplicationListener {
     private void input(){
 
         float delta = Gdx.graphics.getDeltaTime();
-        float WizardWidth = WizardSprite.getWidth();
-        float WizardHeight = WizardSprite.getHeight();
+//        float WizardWidth = WizardSprite.getWidth();
+//        float WizardHeight = WizardSprite.getHeight();
         float moveX=0;
         float moveY=0;
 
@@ -163,7 +171,7 @@ public class Main implements ApplicationListener {
                 touchPos.set(Gdx.input.getX(), Gdx.input.getY());
                 viewport.unproject(touchPos);
                 int portaClicada = portas.getClickedDoor(touchPos.x, touchPos.y);
-                portas.invertDoor(portaClicada, mapData);
+                portas.invertDoor(portaClicada, Mapa.getInstance().getDadosDoMapa());
                 wasTouched = true;
             }
 
@@ -239,12 +247,12 @@ public class Main implements ApplicationListener {
 
     private boolean isWallAt(float x, float y) {
         int tileX = (int)(x / TILE_SIZE);
-        int tileY = mapData.length - 1 - (int)(y / TILE_SIZE); // cuidado com a inversão Y
+        int tileY = Mapa.getInstance().getDadosDoMapa().length - 1 - (int)(y / TILE_SIZE); // cuidado com a inversão Y
 
         if (tileX < 0 || tileX >= cols || tileY < 0 || tileY >= rows) {
             return true; // trata bordas como parede
         }
-        return mapData[tileY][tileX] != ' ';
+        return Mapa.getInstance().getDadosDoMapa()[tileY][tileX] != ' ';
     }
 
 
@@ -265,6 +273,7 @@ public class Main implements ApplicationListener {
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
         batch.begin();
+
         for (int y = 0; y < mapData.length; y++) {
             for (int x = 0; x < mapData[y].length; x++) {
                 Texture tex = null;
