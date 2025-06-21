@@ -54,12 +54,12 @@ public class Portas {
             usedPositions.add(key);
 
             estados[i] = (i % 2 == 0); // alterna estado inicial
-            Texture textura = estados[i] ? texturaFechada : texturaAberta;
+            Texture textura = estados[i] ? texturaAberta: texturaFechada ;
             Sprite sprite = new Sprite(textura);
 
 
             // Marca no mapData para futuras colisões
-            mapData[y][x] = estados[i] ? '\\' : ' ';
+            mapData[y][x] = estados[i] ? ' ':  '\\';
 
             // converte para coordenadas do mundo
             float worldX = x * TILE_SIZE;
@@ -206,6 +206,10 @@ public void invertDoor(int i) {
 //        }
 //        return mapData[tileY][tileX] != ' ';
 //    }
+
+    public Sprite[] getSprites(){
+    return this.sprites;
+    }
 
 }
 

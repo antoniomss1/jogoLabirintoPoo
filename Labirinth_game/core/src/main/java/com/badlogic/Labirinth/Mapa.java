@@ -110,8 +110,8 @@ public class Mapa {
 
 
     public boolean isCollidingWithWall(float x, float y, Jogador jogador) {
-        float width = jogador.getJogadorWidth();
-        float height = jogador.getJogadorHeight();
+        float width = jogador.getJogadorWidth()/2;
+        float height = jogador.getJogadorHeight()/2;
 
         // Checa os 4 cantos do sprite
         return isWallAt(x, y) ||

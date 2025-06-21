@@ -11,9 +11,12 @@
     import com.badlogic.gdx.graphics.g2d.SpriteBatch;
     import com.badlogic.gdx.math.MathUtils;
     import com.badlogic.gdx.math.Vector2;
+    import com.badlogic.gdx.utils.Scaling;
     import com.badlogic.gdx.utils.ScreenUtils;
+    import com.badlogic.gdx.utils.viewport.ExtendViewport;
     import com.badlogic.gdx.utils.viewport.FillViewport;
     import com.badlogic.gdx.utils.viewport.FitViewport;
+    import com.badlogic.gdx.utils.viewport.ScalingViewport;
 
     import java.awt.*;
 
@@ -28,14 +31,9 @@
         Texture WizardTexture;
         Texture Wizard2Texture;
 
-//        public char[][] mapData;
-
         FillViewport viewport;
-
-        int rows;
-        int cols;
-
-//        Sprite WizardSprite;
+        FitViewport miniMapa;
+        FillViewport viewportJogador2;
 
         Vector2 touchPos;
 
@@ -58,7 +56,7 @@
         int TILE_SIZE = Mapa.getInstance().TILE_SIZE;
 
         Jogador mago;
-//        Jogador mago2;
+        Jogador mago2;
 
         @Override
         public void create() {
@@ -85,45 +83,37 @@
             floorGTexture = new Texture(Gdx.files.internal("floorG.png"));
             floorFTexture = new Texture(Gdx.files.internal("floorF.png"));
             floorITexture = new Texture(Gdx.files.internal("floorI.png"));
-    //        mapData = loadMap("map.txt");
 
-            //testando singleton do mapa
             Mapa.iniciarMapa();
             Mapa.getInstance().setDadosDoMapa("map.txt");
-//            mapData = Mapa.getInstance().getDadosDoMapa();
 
-            //para uso no draw
-//             = matriz; // Temporário, até remover o uso direto
-
-    //        Mapa.getInstance().getDadosDoMapa(), rows, cols
             portas = new Portas();
 
 
-            viewport = new FillViewport(Mapa.getInstance().worldWidth, Mapa.getInstance().worldHeight);
-            ((OrthographicCamera)viewport.getCamera()).zoom=.3f;
+            viewport = new FillViewport(Mapa.getInstance().worldWidth , Mapa.getInstance().worldHeight);
+            ((OrthographicCamera)viewport.getCamera()).zoom=.5f;
 
-//            WizardSprite = new Sprite(WizardTexture);//
-//            WizardSprite.setSize((float) TILE_SIZE-20, (float) TILE_SIZE-20);
-//            WizardSprite.setX(TILE_SIZE);
-//    //        WizardSprite.setY(worldHeight - 2* TILE_SIZE);
-//            WizardSprite.setY(TILE_SIZE);
+            miniMapa = new FitViewport((float) Mapa.getInstance().worldWidth/10, (float) Mapa.getInstance().worldHeight/10);
+            ((OrthographicCamera)miniMapa.getCamera()).zoom=15f;
 
-//            mago2 = new Jogador(
-//                Input.Keys.W, Input.Keys.S, Input.Keys.D, Input.Keys.A,
-//                Wizard2Texture,
-//                TILE_SIZE, TILE_SIZE
-//            );
+            viewportJogador2 = new FillViewport(Mapa.getInstance().worldWidth , Mapa.getInstance().worldHeight);
 
-            mago = new Jogador(
-                Input.Keys.UP, Input.Keys.DOWN, Input.Keys.RIGHT, Input.Keys.LEFT,
-                WizardTexture,
+            mago2 = new Jogador(
+                Input.Keys.W, Input.Keys.S, Input.Keys.D, Input.Keys.A, Input.Keys.Q,
+                Wizard2Texture,
                 TILE_SIZE, TILE_SIZE
             );
 
-
-
+            mago = new Jogador(
+                Input.Keys.UP, Input.Keys.DOWN, Input.Keys.RIGHT, Input.Keys.LEFT, Input.Keys.ENTER,
+                WizardTexture,
+                TILE_SIZE, TILE_SIZE
+            );
             touchPos = new Vector2();
-//            Gdx.graphics.setFullscreenMode();
+
+            //descomente abaixo para o jogo começar com tela cheia, mas acho q tem algum problema em fazer só isso
+            //Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+
         }
 
 
@@ -131,104 +121,42 @@
         @Override
         public void resize(int width, int height) {
             // Resize your application here. The parameters represent the new window size.
-            viewport.update(width, height, true);
+            viewport.update(width/2, height, true);
+            viewportJogador2.update(width/2, height, true);
+            miniMapa.update(width/2, height, true);
+
+            viewport.setScreenBounds(0, 0, width / 2, height);        // lado esquerdo
+            viewportJogador2.setScreenBounds(width / 2, 0, width / 2, height); // lado direito
+
+
         }
 
-
-//        float speed = 400f;
         private void input(){
 
-            float delta = Gdx.graphics.getDeltaTime();
-    //        float WizardWidth = WizardSprite.getWidth();
-    //        float WizardHeight = WizardSprite.getHeight();
-
-            //TESTANDO CLASSE JOGADOR
-//            float moveX=0;
-//            float moveY=0;
-//
-//            if(Gdx.input.isKeyPressed(Input.Keys.W)){
-//                ((OrthographicCamera)viewport.getCamera()).zoom-=.01f;
-//            }
-//            else if(Gdx.input.isKeyPressed(Input.Keys.S)){
-//                ((OrthographicCamera)viewport.getCamera()).zoom+=.01f;
-//            }
-//
-//            if(Gdx.input.isKeyPressed(Input.Keys.K)){
-//                speed+=100f;
-//            }else if(Gdx.input.isKeyPressed(Input.Keys.L)){
-//                speed-=100f;
-//            }
-//
-//            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-//    //            WizardSprite.translateX(speed * delta); // move the Wizard right
-//                moveX += speed * delta;
-//            }
-//            else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-//    //            WizardSprite.translateX(-speed * delta); // move the Wizard leff
-//                moveX -=speed * delta;
-//            }
-//            if(Gdx.input.isKeyPressed(Input.Keys.UP)){
-//    //            WizardSprite.translateY(speed * delta);
-//                moveY += speed * delta;
-//            }
-//            else if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
-//    //            WizardSprite.translateY(-speed * delta);
-//                moveY -= speed * delta;
-//            }
-//
-//            if (Gdx.input.isTouched()) {
-//                if (!wasTouched) {
-//                    touchPos.set(Gdx.input.getX(), Gdx.input.getY());
-//                    viewport.unproject(touchPos);
-//                    int portaClicada = portas.getClickedDoor(touchPos.x, touchPos.y);
-//                    portas.invertDoor(portaClicada, Mapa.getInstance().getDadosDoMapa());
-//                    wasTouched = true;
-//                }
-//
-//                //codigo para movimentação com o mouse:
-//    //            touchPos.set(Gdx.input.getX(), Gdx.input.getY()); // Get where the touch happened on screen
-//    //            viewport.unproject(touchPos); // Convert the units to the world units of the viewport
-//    //
-//    //            float dirX = touchPos.x - WizardSprite.getX();
-//    //            float dirY = touchPos.y - WizardSprite.getY();
-//    //            float norma = (float) Math.sqrt(dirX * dirX + dirY * dirY);
-//    //
-//    //            if(norma != 0){
-//    //                moveX += dirX / norma * speed * delta;
-//    //                moveY += dirY / norma * speed * delta;
-//    //            }
-//
-//
-//            } else {
-//                wasTouched = false; // apenas aqui reseta o toque
-//            }
-//
-//            float newX = WizardSprite.getX() + moveX;
-//            float newY = WizardSprite.getY() + moveY;
-//
-//
-//            if (!isCollidingWithWall(newX, WizardSprite.getY())) {
-//                WizardSprite.translateX(moveX);
-//            }
-//            if (!isCollidingWithWall(WizardSprite.getX(), newY)) {
-//                WizardSprite.translateY(moveY);
-//            }
-
-//            mago2.updatePlayer(viewport, portas);
             mago.updatePlayer(viewport, portas);
+            mago2.updatePlayer(viewportJogador2, portas);
 
         }
 
+        boolean camera = false;
+
         private void logic() {
-//            float WizardWidth = WizardSprite.getWidth();
-//            float WizardHeight = WizardSprite.getHeight();
 
-//            float magoWidth = mago.getJogadorWidth();
-//            float magoHeight = mago.getJogadorHeight();
-//            viewport.getCamera().position.set(WizardSprite.getX() + magoWidth / 2, WizardSprite.getY() + magoHeight/ 2, 0);
+            mago.atualizarCamera(miniMapa);
 
-//                mago2.atualizarCamera(viewport);
+            //porque sim!
+            if(Gdx.input.isKeyJustPressed(Input.Keys.P)){
+                camera = !camera;
+            }
+            if(camera){
+                mago.atualizarCamera(viewportJogador2);
+                mago2.atualizarCamera(viewport);
+            }
+            else{
                 mago.atualizarCamera(viewport);
+                mago2.atualizarCamera(viewportJogador2);
+            }
+
         }
 
         @Override
@@ -274,6 +202,52 @@
                             break;
                     }
                     if (tex != null) {
+                        batch.draw(tex, x * TILE_SIZE, (Mapa.getInstance().getDadosDoMapa().length -1 - y) * TILE_SIZE);
+                    }
+                }
+            }
+
+            portas.draw(batch);
+//            WizardSprite.draw(batch);
+            mago.draw(batch);
+            mago2.draw(batch);
+            batch.end();
+
+//            miniMapa.apply();
+
+
+            miniMapa.apply();
+            int factor=5;
+            Gdx.gl.glViewport(viewport.getScreenWidth()-factor*TILE_SIZE-10, 10, TILE_SIZE*factor, TILE_SIZE*factor); // canto inferior esquerdo
+
+            batch.setProjectionMatrix(miniMapa.getCamera().combined);
+            batch.begin();
+
+            for (int y = 0; y < Mapa.getInstance().getDadosDoMapa().length; y++) {
+                for (int x = 0; x < Mapa.getInstance().getDadosDoMapa()[y].length; x++) {
+                    Texture tex = null;
+                    switch (Mapa.getInstance().getDadosDoMapa()[y][x]) {
+                        case 'a':tex = floorATexture;break;
+                        case 'b':tex = floorBTexture;break;
+                        case 'c':tex = floorCTexture;break;
+                        case 'd':tex = floorDTexture;break;
+                        case 'e':tex = floorETexture;break;
+                        case 'h':tex = floorHTexture;break;
+                        case 't':tex = floorTTexture;break;
+                        case 'u':tex = floorUTexture;break;
+                        case 'v':tex = floorVTexture;break;
+                        case 'w':tex = floorWTexture;break;
+                        case 'x':tex = floorXTexture;break;
+                        case '+':tex = floorPTexture;break;
+                        case 'g':tex = floorGTexture;break;
+                        case 'f':tex = floorFTexture;break;
+                        case 'i':tex = floorITexture;break;
+
+                        case ' ':
+                            tex = floorTexture;
+                            break;
+                    }
+                    if (tex != null) {
                         batch.draw(tex, x * TILE_SIZE, (Mapa.getInstance().getDadosDoMapa().length - 1 - y) * TILE_SIZE);
                     }
                 }
@@ -282,7 +256,48 @@
             portas.draw(batch);
 //            WizardSprite.draw(batch);
             mago.draw(batch);
-//            mago2.draw(batch);
+            mago2.draw(batch);
+            batch.end();
+
+            viewportJogador2.apply();
+            batch.setProjectionMatrix(viewportJogador2.getCamera().combined);
+            batch.begin();
+
+            for (int y = 0; y < Mapa.getInstance().getDadosDoMapa().length; y++) {
+                for (int x = 0; x < Mapa.getInstance().getDadosDoMapa()[y].length; x++) {
+                    Texture tex = null;
+                    switch (Mapa.getInstance().getDadosDoMapa()[y][x]) {
+                        case 'a':tex = floorATexture;break;
+                        case 'b':tex = floorBTexture;break;
+                        case 'c':tex = floorCTexture;break;
+                        case 'd':tex = floorDTexture;break;
+                        case 'e':tex = floorETexture;break;
+                        case 'h':tex = floorHTexture;break;
+                        case 't':tex = floorTTexture;break;
+                        case 'u':tex = floorUTexture;break;
+                        case 'v':tex = floorVTexture;break;
+                        case 'w':tex = floorWTexture;break;
+                        case 'x':tex = floorXTexture;break;
+                        case '+':tex = floorPTexture;break;
+                        case 'g':tex = floorGTexture;break;
+                        case 'f':tex = floorFTexture;break;
+                        case 'i':tex = floorITexture;break;
+
+                        case ' ':
+                            tex = floorTexture;
+                            break;
+                    }
+                    if (tex != null) {
+                        batch.draw(tex, x * TILE_SIZE, (Mapa.getInstance().getDadosDoMapa().length - 1 - y) * TILE_SIZE);
+                    }
+                }
+            }
+
+            portas.draw(batch);
+//            WizardSprite.draw(batch);
+            mago.draw(batch);
+            mago2.draw(batch);
+
             batch.end();
         }
 
@@ -325,15 +340,6 @@
             if (floorITexture != null) floorITexture.dispose();
 
             if (portas != null) portas.dispose();
-
-            // Liberação de eventuais recursos internos (se houver)
-            // portas.dispose(); // se a classe Portas possuir dispose()
-
-            // Solicita saída da aplicação
-//            Gdx.app.exit();
-
-            // Força o encerramento da JVM (útil para encerrar corretamente no IntelliJ)
-//            System.exit(0);
         }
 
         public Portas getPortas(){
