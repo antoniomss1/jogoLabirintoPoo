@@ -23,5 +23,6 @@ map35.txt
 mapO.txt
 porta_aberta.png
 porta_fechada.png
+transfigurador1.png
 wall.png
 wizard.png

@@ -13,7 +13,6 @@ public class Jogador {
 //    private String nome;
 
     private int Up, Down, Right, Left, button;
-    private int X, Y;
     private Sprite jogadorSprite;
 
     float jogadorWidth;
@@ -23,6 +22,9 @@ public class Jogador {
 
     private boolean wasTouched = false;
     Vector2 touchPos;
+
+    private static int i = -1;
+    private int ID=0;
 
     //int []portas;/////////////////////////////////////////////////////////
 
@@ -39,6 +41,8 @@ public class Jogador {
         jogadorSprite.setX(initialX);
         jogadorSprite.setY(initialY);
         touchPos = new Vector2();
+        i++;
+        this.ID=i;
     }
 
     public void updatePlayer(Viewport viewport, Portas portas){
@@ -49,20 +53,20 @@ public class Jogador {
         setSpeed();
 
 
-        if (Gdx.input.isTouched()) {
-            if (!wasTouched) {
-                touchPos.set(Gdx.input.getX(), Gdx.input.getY());
-                viewport.unproject(touchPos);
-                System.out.println("clicked: X = "+ (int)touchPos.x/Mapa.getInstance().TILE_SIZE + " Y = "+(int)touchPos.y/Mapa.getInstance().TILE_SIZE);
-
-                int portaClicada = portas.getClickedDoor(touchPos.x, touchPos.y);
-                portas.invertDoor(portaClicada);
-                wasTouched = true;
-            }
-
-        } else {
-            wasTouched = false; // apenas aqui reseta o toque
-        }
+//        if (Gdx.input.isTouched()) {
+//            if (!wasTouched) {
+//                touchPos.set(Gdx.input.getX(), Gdx.input.getY());
+//                viewport.unproject(touchPos);
+//                System.out.println("clicked: X = "+ (int)touchPos.x/Mapa.getInstance().TILE_SIZE + " Y = "+(int)touchPos.y/Mapa.getInstance().TILE_SIZE);
+//
+//                int portaClicada = portas.getClickedDoor(touchPos.x, touchPos.y);
+//                portas.invertDoor(portaClicada, this);
+//                wasTouched = true;
+//            }
+//
+//        } else {
+//            wasTouched = false; // apenas aqui reseta o toque
+//        }
 
     }
 
@@ -72,6 +76,7 @@ public class Jogador {
 ////        setSpeed();
 //
 //    }
+
 
 //    public void escreverNaCarta(Carta carta, String texto) {
 //        carta.editarConteudo(texto);
@@ -197,7 +202,7 @@ public class Jogador {
         System.out.println("3 button pressed");
 
         if (portaMaisProxima != -1) {
-            portas.invertDoor(portaMaisProxima);
+            portas.invertDoor(portaMaisProxima, this.ID);
         }
 
 
