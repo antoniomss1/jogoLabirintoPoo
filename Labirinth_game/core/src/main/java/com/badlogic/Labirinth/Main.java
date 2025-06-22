@@ -52,11 +52,14 @@
         Texture floorGTexture;
         Texture floorFTexture;
         Texture floorITexture;
+        Texture transfiguradorTexture;
         Portas portas;
         int TILE_SIZE = Mapa.getInstance().TILE_SIZE;
 
         Jogador mago;
         Jogador mago2;
+
+        Transfigurador transfigurador;
 
         @Override
         public void create() {
@@ -83,6 +86,7 @@
             floorGTexture = new Texture(Gdx.files.internal("floorG.png"));
             floorFTexture = new Texture(Gdx.files.internal("floorF.png"));
             floorITexture = new Texture(Gdx.files.internal("floorI.png"));
+            transfiguradorTexture = new Texture(Gdx.files.internal("transfigurador1.png"));
 
             Mapa.iniciarMapa();
             Mapa.getInstance().setDadosDoMapa("map.txt");
@@ -97,6 +101,7 @@
             ((OrthographicCamera)miniMapa.getCamera()).zoom=15f;
 
             viewportJogador2 = new FillViewport(Mapa.getInstance().worldWidth , Mapa.getInstance().worldHeight);
+            ((OrthographicCamera)viewportJogador2.getCamera()).zoom=.5f;
 
             mago2 = new Jogador(
                 Input.Keys.W, Input.Keys.S, Input.Keys.D, Input.Keys.A, Input.Keys.Q,
@@ -113,6 +118,8 @@
 
             //descomente abaixo para o jogo começar com tela cheia, mas acho q tem algum problema em fazer só isso
             //Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+
+            transfigurador = new Transfigurador(transfiguradorTexture,  1,1);
 
         }
 
@@ -135,6 +142,7 @@
 
             mago.updatePlayer(viewport, portas);
             mago2.updatePlayer(viewportJogador2, portas);
+            transfigurador.update(Gdx.graphics.getDeltaTime());
 
         }
 
@@ -211,6 +219,7 @@
 //            WizardSprite.draw(batch);
             mago.draw(batch);
             mago2.draw(batch);
+            transfigurador.draw(batch);
             batch.end();
 
 //            miniMapa.apply();
@@ -297,6 +306,7 @@
 //            WizardSprite.draw(batch);
             mago.draw(batch);
             mago2.draw(batch);
+            transfigurador.draw(batch);
 
             batch.end();
         }

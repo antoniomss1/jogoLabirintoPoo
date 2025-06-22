@@ -26,7 +26,6 @@ public class Jogador {
     private static int i = -1;
     private int ID=0;
 
-    //int []portas;/////////////////////////////////////////////////////////
 
     public Jogador(int up, int down, int right, int left, int doorButton, Texture gamerTexture, int initialX, int initialY) {
         this.Down   = down;
@@ -138,10 +137,10 @@ public class Jogador {
         float newY = jogadorSprite.getY() + moveY;
 
 
-        if (!Mapa.getInstance().isCollidingWithWall(newX, jogadorSprite.getY(), this)) {
+        if (!Mapa.getInstance().isCollidingWithWall(newX, jogadorSprite.getY(), this.jogadorWidth, this.jogadorHeight)) {
             jogadorSprite.translateX(moveX);
         }
-        if (!Mapa.getInstance().isCollidingWithWall(jogadorSprite.getX(), newY, this)) {
+        if (!Mapa.getInstance().isCollidingWithWall(jogadorSprite.getX(), newY, this.jogadorWidth, this.jogadorHeight)) {
             jogadorSprite.translateY(moveY);
         }
     }
@@ -191,6 +190,7 @@ public class Jogador {
                     float dy = jogadorSprite.getY() - py;
                     float dist2 = dx * dx + dy * dy;
 
+
                     if (dist2 < menorDist) {
                         menorDist = dist2;
                         portaMaisProxima = i;
@@ -223,11 +223,11 @@ public class Jogador {
     }
 
     private void setSpeed(){
-        if(Gdx.input.isKeyPressed(Input.Keys.K)){
-            speed+=10f;
-        }else if(Gdx.input.isKeyPressed(Input.Keys.L)){
-            speed-=10f;
-        }
+//        if(Gdx.input.isKeyPressed(Input.Keys.K)){
+//            speed+=10f;
+//        }else if(Gdx.input.isKeyPressed(Input.Keys.L)){
+//            speed-=10f;
+//        }
     }
 
 }

@@ -109,16 +109,16 @@ public class Mapa {
     }
 
 
-    public boolean isCollidingWithWall(float x, float y, Jogador jogador) {
-        float width = jogador.getJogadorWidth()/2;
-        float height = jogador.getJogadorHeight()/2;
-
-        // Checa os 4 cantos do sprite
-        return isWallAt(x, y) ||
-            isWallAt(x + width, y) ||
-            isWallAt(x, y + height) ||
-            isWallAt(x + width, y + height);
-    }
+//    public boolean isCollidingWithWall(float x, float y, Jogador jogador) {
+//        float width = jogador.getJogadorWidth()/2;
+//        float height = jogador.getJogadorHeight()/2;
+//
+//        // Checa os 4 cantos do sprite
+//        return isWallAt(x, y) ||
+//            isWallAt(x + width, y) ||
+//            isWallAt(x, y + height) ||
+//            isWallAt(x + width, y + height);
+//    }
 
     //    private boolean isWallAt(float x, float y) {
     //        int tileX = (int)(x / TILE_SIZE);
@@ -151,12 +151,34 @@ public class Mapa {
         return Mapa.getInstance().getDadosDoMapa()[tileY][tileX] != ' ';
     }
 
+//    public boolean isCollidingWithWall(float x, float y, NPC npc) {
+//        float width = npc.getNPCWidth()/2;
+//        float height = npc.getNPCHeight()/2;
+//
+//        // Checa os 4 cantos do sprite
+//        return isWallAt(x, y) ||
+//            isWallAt(x + width, y) ||
+//            isWallAt(x, y + height) ||
+//            isWallAt(x + width, y + height);
+//    }
+    public boolean isCollidingWithWall(float x, float y, float largura, float altura) {
+        return isWallAt(x, y) ||
+            isWallAt(x + largura, y) ||
+            isWallAt(x, y + altura) ||
+            isWallAt(x + largura, y + altura);
+    }
+
+
     public int getRows() {
         return rows;
     }
 
     public int getCols() {
         return cols;
+    }
+
+    public int getAltura() {
+        return getDadosDoMapa().length;
     }
 
 }
