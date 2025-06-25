@@ -1,3 +1,4 @@
+Chave.png
 OLDfloorH.png
 floor+.png
 floor.png
@@ -18,6 +19,7 @@ floorX.png
 magoBola.png
 map.txt
 map1letras.txt
+map2.txt
 map3.txt
 map35.txt
 mapO.txt
