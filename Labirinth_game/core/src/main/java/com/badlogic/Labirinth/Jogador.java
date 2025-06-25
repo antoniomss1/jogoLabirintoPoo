@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class Jogador {
+public class Jogador extends Character{
 //    private String nome;
 
     private int Up, Down, Right, Left, button;
@@ -151,18 +151,76 @@ public class Jogador {
 //        }
 //    }
 
+//    private void doorInvertion(Portas portas) {
+//        if (!Gdx.input.isKeyJustPressed(this.button)) return;
+//        System.out.println("button pressed");
+//
+//        Sprite[] portaSprites = portas.getSprites();
+//        if (portaSprites == null || portaSprites.length == 0) return;
+//
+//        System.out.println("2 button pressed");
+//
+//        int tileSize = Mapa.getInstance().TILE_SIZE;
+//        int jogadorTileX = (int)(jogadorSprite.getX() / tileSize);
+//        int jogadorTileY = Mapa.getInstance().getRows() - 1 - (int)(jogadorSprite.getY() / tileSize); // cuidado com y invertido
+//
+//        int[][] offsets = {
+//            {-1, -1}, {-1,  0}, {-1, 1},
+//            { 0, -1},          { 0, 1},
+//            { 1, -1}, { 1,  0}, { 1, 1}
+//        };
+//
+//        int portaMaisProxima = -1;
+//        float menorDist = Float.MAX_VALUE;
+//
+//        for (int i = 0; i < portaSprites.length; i++) {
+//            float px = portaSprites[i].getX();
+//            float py = portaSprites[i].getY();
+//
+//            int portaTileX = (int)(px / tileSize);
+//            int portaTileY = Mapa.getInstance().getRows() - 1 - (int)(py / tileSize);
+//
+//            // verifica se está nas 8 posições adjacentes
+//            for (int[] offset : offsets) {
+//                int nx = jogadorTileX + offset[0];
+//                int ny = jogadorTileY + offset[1];
+//
+//                if (portaTileX == nx && portaTileY == ny) {
+//                    float dx = jogadorSprite.getX() - px;
+//                    float dy = jogadorSprite.getY() - py;
+//                    float dist2 = dx * dx + dy * dy;
+//
+//
+//                    if (dist2 < menorDist) {
+//                        menorDist = dist2;
+//                        portaMaisProxima = i;
+//                    }
+//                }
+//            }
+//        }
+//
+//        System.out.println("3 button pressed");
+//
+//        if (portaMaisProxima != -1) {
+//            portas.invertDoor(portaMaisProxima, this.ID);
+//        }
+//        System.out.println("4 button pressed");
+//    }
+
+
+    //door Invertion
     private void doorInvertion(Portas portas) {
         if (!Gdx.input.isKeyJustPressed(this.button)) return;
-        System.out.println("button pressed");
 
         Sprite[] portaSprites = portas.getSprites();
         if (portaSprites == null || portaSprites.length == 0) return;
 
-        System.out.println("2 button pressed");
+        float jogadorCentroX = jogadorSprite.getX() + jogadorSprite.getWidth() / 2f;
+        float jogadorCentroY = jogadorSprite.getY() + jogadorSprite.getHeight() / 2f;
 
         int tileSize = Mapa.getInstance().TILE_SIZE;
-        int jogadorTileX = (int)(jogadorSprite.getX() / tileSize);
-        int jogadorTileY = Mapa.getInstance().getRows() - 1 - (int)(jogadorSprite.getY() / tileSize); // cuidado com y invertido
+        int jogadorTileX = (int)(jogadorCentroX / tileSize);
+        int jogadorTileY = Mapa.getInstance().getRows() - 1 - (int)(jogadorCentroY / tileSize);
 
         int[][] offsets = {
             {-1, -1}, {-1,  0}, {-1, 1},
@@ -174,22 +232,21 @@ public class Jogador {
         float menorDist = Float.MAX_VALUE;
 
         for (int i = 0; i < portaSprites.length; i++) {
-            float px = portaSprites[i].getX();
-            float py = portaSprites[i].getY();
+            Sprite porta = portaSprites[i];
+            float portaCentroX = porta.getX() + porta.getWidth() / 2f;
+            float portaCentroY = porta.getY() + porta.getHeight() / 2f;
 
-            int portaTileX = (int)(px / tileSize);
-            int portaTileY = Mapa.getInstance().getRows() - 1 - (int)(py / tileSize);
+            int portaTileX = (int)(portaCentroX / tileSize);
+            int portaTileY = Mapa.getInstance().getRows() - 1 - (int)(portaCentroY / tileSize);
 
-            // verifica se está nas 8 posições adjacentes
             for (int[] offset : offsets) {
                 int nx = jogadorTileX + offset[0];
                 int ny = jogadorTileY + offset[1];
 
                 if (portaTileX == nx && portaTileY == ny) {
-                    float dx = jogadorSprite.getX() - px;
-                    float dy = jogadorSprite.getY() - py;
+                    float dx = jogadorCentroX - portaCentroX;
+                    float dy = jogadorCentroY - portaCentroY;
                     float dist2 = dx * dx + dy * dy;
-
 
                     if (dist2 < menorDist) {
                         menorDist = dist2;
@@ -199,15 +256,11 @@ public class Jogador {
             }
         }
 
-        System.out.println("3 button pressed");
-
         if (portaMaisProxima != -1) {
             portas.invertDoor(portaMaisProxima, this.ID);
         }
-
-
-        System.out.println("4 button pressed");
     }
+
 
     //    public void setZoom(){
 //

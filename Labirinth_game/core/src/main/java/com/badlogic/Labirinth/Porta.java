@@ -19,6 +19,8 @@ public class Porta {
         Texture textura = estado ? texturaAberta : texturaFechada;
         this.sprite = new Sprite(textura);
         this.sprite.setPosition(x * TILE_SIZE, (rows - 1 - y) * TILE_SIZE);
+//        this.sprite.setPosition(x*TILE_SIZE, y*TILE_SIZE);
+
         this.dono = dono;
     }
 
@@ -30,7 +32,7 @@ public class Porta {
 
         // Atualiza o mapa
         char novoChar = estado ? ' ' : '\\';
-        Mapa.getInstance().setTile(posX, posY, novoChar);
+        Mapa.getInstance().setTile(posX , posY , novoChar);
     }
 
     public boolean contem(float x, float y) {

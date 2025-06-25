@@ -53,6 +53,8 @@
         Texture floorFTexture;
         Texture floorITexture;
         Texture transfiguradorTexture;
+        Texture keyTexture;
+
         Portas portas;
         int TILE_SIZE = Mapa.getInstance().TILE_SIZE;
 
@@ -60,6 +62,8 @@
         Jogador mago2;
 
         Transfigurador transfigurador;
+
+        Chave key;
 
         @Override
         public void create() {
@@ -87,6 +91,7 @@
             floorFTexture = new Texture(Gdx.files.internal("floorF.png"));
             floorITexture = new Texture(Gdx.files.internal("floorI.png"));
             transfiguradorTexture = new Texture(Gdx.files.internal("transfigurador1.png"));
+            keyTexture    = new Texture(Gdx.files.internal("Chave.png"));
 
             Mapa.iniciarMapa();
             Mapa.getInstance().setDadosDoMapa("map.txt");
@@ -101,7 +106,7 @@
             ((OrthographicCamera)miniMapa.getCamera()).zoom=15f;
 
             viewportJogador2 = new FillViewport(Mapa.getInstance().worldWidth , Mapa.getInstance().worldHeight);
-            ((OrthographicCamera)viewportJogador2.getCamera()).zoom=.5f;
+            ((OrthographicCamera)viewportJogador2.getCamera()).zoom=2f;
 
             mago2 = new Jogador(
                 Input.Keys.W, Input.Keys.S, Input.Keys.D, Input.Keys.A, Input.Keys.Q,
@@ -117,10 +122,12 @@
             touchPos = new Vector2();
 
             //descomente abaixo para o jogo começar com tela cheia, mas acho q tem algum problema em fazer só isso
-            //Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+            Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 
-            transfigurador = new Transfigurador(transfiguradorTexture,  1,1);
+            transfigurador = new Transfigurador(transfiguradorTexture,  1,1, 300f);
 
+
+            key = new Chave(keyTexture, 1, 1);
         }
 
 
@@ -185,41 +192,45 @@
 
             batch.begin();
 
-            for (int y = 0; y < Mapa.getInstance().getDadosDoMapa().length; y++) {
-                for (int x = 0; x < Mapa.getInstance().getDadosDoMapa()[y].length; x++) {
-                    Texture tex = null;
-                    switch (Mapa.getInstance().getDadosDoMapa()[y][x]) {
-                        case 'a':tex = floorATexture;break;
-                        case 'b':tex = floorBTexture;break;
-                        case 'c':tex = floorCTexture;break;
-                        case 'd':tex = floorDTexture;break;
-                        case 'e':tex = floorETexture;break;
-                        case 'h':tex = floorHTexture;break;
-                        case 't':tex = floorTTexture;break;
-                        case 'u':tex = floorUTexture;break;
-                        case 'v':tex = floorVTexture;break;
-                        case 'w':tex = floorWTexture;break;
-                        case 'x':tex = floorXTexture;break;
-                        case '+':tex = floorPTexture;break;
-                        case 'g':tex = floorGTexture;break;
-                        case 'f':tex = floorFTexture;break;
-                        case 'i':tex = floorITexture;break;
-
-                        case ' ':
-                            tex = floorTexture;
-                            break;
-                    }
-                    if (tex != null) {
-                        batch.draw(tex, x * TILE_SIZE, (Mapa.getInstance().getDadosDoMapa().length -1 - y) * TILE_SIZE);
-                    }
-                }
-            }
+            desenharMapa(batch);
+//            for (int y = 0; y < Mapa.getInstance().getDadosDoMapa().length; y++) {
+//                for (int x = 0; x < Mapa.getInstance().getDadosDoMapa()[y].length; x++) {
+//                    Texture tex = null;
+//                    switch (Mapa.getInstance().getDadosDoMapa()[y][x]) {
+//                        case 'a':tex = floorATexture;break;
+//                        case 'b':tex = floorBTexture;break;
+//                        case 'c':tex = floorCTexture;break;
+//                        case 'd':tex = floorDTexture;break;
+//                        case 'e':tex = floorETexture;break;
+//                        case 'h':tex = floorHTexture;break;
+//                        case 't':tex = floorTTexture;break;
+//                        case 'u':tex = floorUTexture;break;
+//                        case 'v':tex = floorVTexture;break;
+//                        case 'w':tex = floorWTexture;break;
+//                        case 'x':tex = floorXTexture;break;
+//                        case '+':tex = floorPTexture;break;
+//                        case 'g':tex = floorGTexture;break;
+//                        case 'f':tex = floorFTexture;break;
+//                        case 'i':tex = floorITexture;break;
+//
+//                        case ' ':
+//                            tex = floorTexture;
+//                            break;
+//                    }
+//                    if (tex != null) {
+//                        batch.draw(tex, x * TILE_SIZE, (Mapa.getInstance().getDadosDoMapa().length -1 - y) * TILE_SIZE);
+//                    }
+//                }
+//            }
 
             portas.draw(batch);
 //            WizardSprite.draw(batch);
             mago.draw(batch);
             mago2.draw(batch);
             transfigurador.draw(batch);
+
+            key.draw(batch);
+
             batch.end();
 
 //            miniMapa.apply();
@@ -231,82 +242,30 @@
 
             batch.setProjectionMatrix(miniMapa.getCamera().combined);
             batch.begin();
+            desenharMapa(batch);
 
-            for (int y = 0; y < Mapa.getInstance().getDadosDoMapa().length; y++) {
-                for (int x = 0; x < Mapa.getInstance().getDadosDoMapa()[y].length; x++) {
-                    Texture tex = null;
-                    switch (Mapa.getInstance().getDadosDoMapa()[y][x]) {
-                        case 'a':tex = floorATexture;break;
-                        case 'b':tex = floorBTexture;break;
-                        case 'c':tex = floorCTexture;break;
-                        case 'd':tex = floorDTexture;break;
-                        case 'e':tex = floorETexture;break;
-                        case 'h':tex = floorHTexture;break;
-                        case 't':tex = floorTTexture;break;
-                        case 'u':tex = floorUTexture;break;
-                        case 'v':tex = floorVTexture;break;
-                        case 'w':tex = floorWTexture;break;
-                        case 'x':tex = floorXTexture;break;
-                        case '+':tex = floorPTexture;break;
-                        case 'g':tex = floorGTexture;break;
-                        case 'f':tex = floorFTexture;break;
-                        case 'i':tex = floorITexture;break;
-
-                        case ' ':
-                            tex = floorTexture;
-                            break;
-                    }
-                    if (tex != null) {
-                        batch.draw(tex, x * TILE_SIZE, (Mapa.getInstance().getDadosDoMapa().length - 1 - y) * TILE_SIZE);
-                    }
-                }
-            }
 
             portas.draw(batch);
 //            WizardSprite.draw(batch);
             mago.draw(batch);
             mago2.draw(batch);
+
+            key.draw(batch);
+
             batch.end();
 
             viewportJogador2.apply();
             batch.setProjectionMatrix(viewportJogador2.getCamera().combined);
             batch.begin();
 
-            for (int y = 0; y < Mapa.getInstance().getDadosDoMapa().length; y++) {
-                for (int x = 0; x < Mapa.getInstance().getDadosDoMapa()[y].length; x++) {
-                    Texture tex = null;
-                    switch (Mapa.getInstance().getDadosDoMapa()[y][x]) {
-                        case 'a':tex = floorATexture;break;
-                        case 'b':tex = floorBTexture;break;
-                        case 'c':tex = floorCTexture;break;
-                        case 'd':tex = floorDTexture;break;
-                        case 'e':tex = floorETexture;break;
-                        case 'h':tex = floorHTexture;break;
-                        case 't':tex = floorTTexture;break;
-                        case 'u':tex = floorUTexture;break;
-                        case 'v':tex = floorVTexture;break;
-                        case 'w':tex = floorWTexture;break;
-                        case 'x':tex = floorXTexture;break;
-                        case '+':tex = floorPTexture;break;
-                        case 'g':tex = floorGTexture;break;
-                        case 'f':tex = floorFTexture;break;
-                        case 'i':tex = floorITexture;break;
-
-                        case ' ':
-                            tex = floorTexture;
-                            break;
-                    }
-                    if (tex != null) {
-                        batch.draw(tex, x * TILE_SIZE, (Mapa.getInstance().getDadosDoMapa().length - 1 - y) * TILE_SIZE);
-                    }
-                }
-            }
+            desenharMapa(batch);
 
             portas.draw(batch);
 //            WizardSprite.draw(batch);
             mago.draw(batch);
             mago2.draw(batch);
             transfigurador.draw(batch);
+            key.draw(batch);
 
             batch.end();
         }
@@ -355,4 +314,40 @@
         public Portas getPortas(){
             return this.portas;
         }
+
+        private void desenharMapa(SpriteBatch batch) {
+            char[][] mapa = Mapa.getInstance().getDadosDoMapa();
+            for (int y = 0; y < mapa.length; y++) {
+                for (int x = 0; x < mapa[y].length; x++) {
+                    Texture tex = getTextureFromChar(mapa[y][x]);
+                    if (tex != null) {
+                        batch.draw(tex, x * TILE_SIZE, (mapa.length - 1 - y) * TILE_SIZE);
+                    }
+                }
+            }
+        }
+
+        private Texture getTextureFromChar(char tile) {
+            switch (tile) {
+                case 'a': return floorATexture;
+                case 'b': return floorBTexture;
+                case 'c': return floorCTexture;
+                case 'd': return floorDTexture;
+                case 'e': return floorETexture;
+                case 'f': return floorFTexture;
+                case 'g': return floorGTexture;
+                case 'h': return floorHTexture;
+                case 'i': return floorITexture;
+                case 't': return floorTTexture;
+                case 'u': return floorUTexture;
+                case 'v': return floorVTexture;
+                case 'w': return floorWTexture;
+                case 'x': return floorXTexture;
+                case '+': return floorPTexture;
+                case ' ': return floorTexture;
+                default: return null; // pode retornar uma textura padrão de erro, se quiser
+            }
+        }
+
+
     }

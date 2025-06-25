@@ -19,10 +19,10 @@ public class Mapa {
     int rows;
     int cols;
 
-    public void setDadosDoMapa(String mapText) {
+    public void setDadosDoMapa(String mapTextName) {
 
 
-        char[][] matriz = loadMap(mapText);
+        char[][] matriz = loadMap(mapTextName);
         this.dadosDoMapa = matriz;
 
 //        String[] lines = Gdx.files.internal(filename).readString().split("\n");
@@ -37,7 +37,6 @@ public class Mapa {
     public char[][] getDadosDoMapa() {
         return dadosDoMapa;
     }
-
 
     //precisa ser private para ser singleton, né?
     private Mapa() {
@@ -108,39 +107,6 @@ public class Mapa {
         return map;
     }
 
-
-//    public boolean isCollidingWithWall(float x, float y, Jogador jogador) {
-//        float width = jogador.getJogadorWidth()/2;
-//        float height = jogador.getJogadorHeight()/2;
-//
-//        // Checa os 4 cantos do sprite
-//        return isWallAt(x, y) ||
-//            isWallAt(x + width, y) ||
-//            isWallAt(x, y + height) ||
-//            isWallAt(x + width, y + height);
-//    }
-
-    //    private boolean isWallAt(float x, float y) {
-    //        int tileX = (int)(x / TILE_SIZE);
-    //        int tileY = mapData.length - 1 - (int)(y / TILE_SIZE); // cuidado com a inversão Y
-    //
-    //        if (tileX < 0 || tileX >= cols || tileY < 0 || tileY >= rows) {
-    //            return true; // borda é parede
-    //        }
-    //
-    //        char tile = mapData[tileY][tileX];
-    //
-    //        if(tile!=' '){
-    //            if(tile == '/'){
-    //                return false;
-    //            }
-    //            return true;
-    //        }
-    //        return false;
-    ////        return tile == '#' || tile == '\\'; // bloqueia parede e porta FECHADA
-    //    }
-
-
     private boolean isWallAt(float x, float y) {
         int tileX = (int)(x / TILE_SIZE);
         int tileY = dadosDoMapa.length - 1 - (int)(y / TILE_SIZE);
@@ -151,16 +117,6 @@ public class Mapa {
         return Mapa.getInstance().getDadosDoMapa()[tileY][tileX] != ' ';
     }
 
-//    public boolean isCollidingWithWall(float x, float y, NPC npc) {
-//        float width = npc.getNPCWidth()/2;
-//        float height = npc.getNPCHeight()/2;
-//
-//        // Checa os 4 cantos do sprite
-//        return isWallAt(x, y) ||
-//            isWallAt(x + width, y) ||
-//            isWallAt(x, y + height) ||
-//            isWallAt(x + width, y + height);
-//    }
     public boolean isCollidingWithWall(float x, float y, float largura, float altura) {
         return isWallAt(x, y) ||
             isWallAt(x + largura, y) ||
@@ -180,6 +136,11 @@ public class Mapa {
     public int getAltura() {
         return getDadosDoMapa().length;
     }
+
+    private boolean isTileTransponivel(char tile) {
+        return tile == ' '; // ou: return " ._".indexOf(tile) != -1;
+    }
+
 
 }
 
