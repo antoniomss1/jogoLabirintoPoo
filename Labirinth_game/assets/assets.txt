@@ -1,5 +1,12 @@
+Babynotes.otf
 Chave.png
+Minecraft.ttf
 OLDfloorH.png
+TITULO.png
+background.png
+background_letter.png
+botao_carta.png
+default.fnt
 floor+.png
 floor.png
 floorA.png
@@ -16,6 +23,8 @@ floorU.png
 floorV.png
 floorW.png
 floorX.png
+fundo_branco.png
+letter_view.png
 magoBola.png
 map.txt
 map1letras.txt
@@ -24,7 +33,15 @@ map3.txt
 map35.txt
 mapO.txt
 porta_aberta.png
+porta_aberta_J1.png
 porta_fechada.png
+porta_fechada_J1.png
+sem_fundo_INICIARJOGO.png
+sem_fundo_OPCOES.png
+sem_fundo_SAIR.png
 transfigurador1.png
+uiskin.atlas
+uiskin.json
+uiskin.png
 wall.png
 wizard.png

@@ -18,7 +18,7 @@ public class Jogador extends Character{
     float jogadorWidth;
     float jogadorHeight;
 
-    private float speed = 400f;
+    private float speed = 250f;
 
     private boolean wasTouched = false;
     Vector2 touchPos;
@@ -26,6 +26,25 @@ public class Jogador extends Character{
     private static int i = -1;
     private int ID=0;
 
+    private static int pontos=0;
+
+    private int cahvesColetadas;
+
+    public boolean colidiuComChave(){
+        int TILE_SIZE = Mapa.getInstance().TILE_SIZE;
+        int i=0;
+        for(Chave c: Mapa.getInstance().getChaves()){
+
+            if(this.getX() == (float) c.getX() ){
+                if(this.getY() == (float) c.getY()  ){
+                    Mapa.getInstance().tirarChaveDoMapa(c);
+                    return true;
+                }
+            }
+            i++;
+        }
+        return  false;
+    }
 
     public Jogador(int up, int down, int right, int left, int doorButton, Texture gamerTexture, int initialX, int initialY) {
         this.Down   = down;
@@ -44,14 +63,21 @@ public class Jogador extends Character{
         this.ID=i;
     }
 
-    public void updatePlayer(Viewport viewport, Portas portas){
+    public boolean updatePlayer(Viewport viewport, Portas portas){
 
         moviment();
         doorInvertion(portas);
         zoomControl(viewport);
         setSpeed();
 
-
+        if (this.colidiuComChave()){
+            pontos++;
+            System.out.println("colidiu com chave: "+pontos+" pontos");
+            if(pontos == Mapa.getInstance().getNumChaves()){
+                return true;
+            }
+        }
+        return false;
 //        if (Gdx.input.isTouched()) {
 //            if (!wasTouched) {
 //                touchPos.set(Gdx.input.getX(), Gdx.input.getY());
@@ -145,67 +171,13 @@ public class Jogador extends Character{
         }
     }
 
-//    private void doorInvertion(){
-//        if(Gdx.input.isKeyJustPressed(this.button)){
-//
-//        }
-//    }
+    public int getX(){
+        return (int)this.getSprite().getX()/Mapa.getInstance().TILE_SIZE;
+    }
 
-//    private void doorInvertion(Portas portas) {
-//        if (!Gdx.input.isKeyJustPressed(this.button)) return;
-//        System.out.println("button pressed");
-//
-//        Sprite[] portaSprites = portas.getSprites();
-//        if (portaSprites == null || portaSprites.length == 0) return;
-//
-//        System.out.println("2 button pressed");
-//
-//        int tileSize = Mapa.getInstance().TILE_SIZE;
-//        int jogadorTileX = (int)(jogadorSprite.getX() / tileSize);
-//        int jogadorTileY = Mapa.getInstance().getRows() - 1 - (int)(jogadorSprite.getY() / tileSize); // cuidado com y invertido
-//
-//        int[][] offsets = {
-//            {-1, -1}, {-1,  0}, {-1, 1},
-//            { 0, -1},          { 0, 1},
-//            { 1, -1}, { 1,  0}, { 1, 1}
-//        };
-//
-//        int portaMaisProxima = -1;
-//        float menorDist = Float.MAX_VALUE;
-//
-//        for (int i = 0; i < portaSprites.length; i++) {
-//            float px = portaSprites[i].getX();
-//            float py = portaSprites[i].getY();
-//
-//            int portaTileX = (int)(px / tileSize);
-//            int portaTileY = Mapa.getInstance().getRows() - 1 - (int)(py / tileSize);
-//
-//            // verifica se está nas 8 posições adjacentes
-//            for (int[] offset : offsets) {
-//                int nx = jogadorTileX + offset[0];
-//                int ny = jogadorTileY + offset[1];
-//
-//                if (portaTileX == nx && portaTileY == ny) {
-//                    float dx = jogadorSprite.getX() - px;
-//                    float dy = jogadorSprite.getY() - py;
-//                    float dist2 = dx * dx + dy * dy;
-//
-//
-//                    if (dist2 < menorDist) {
-//                        menorDist = dist2;
-//                        portaMaisProxima = i;
-//                    }
-//                }
-//            }
-//        }
-//
-//        System.out.println("3 button pressed");
-//
-//        if (portaMaisProxima != -1) {
-//            portas.invertDoor(portaMaisProxima, this.ID);
-//        }
-//        System.out.println("4 button pressed");
-//    }
+    public int getY(){
+        return Mapa.getInstance().rows - 1 -(int)(this.getSprite().getY())/Mapa.getInstance().TILE_SIZE;
+    }
 
 
     //door Invertion

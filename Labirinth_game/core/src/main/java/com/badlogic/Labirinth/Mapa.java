@@ -1,13 +1,20 @@
 package com.badlogic.Labirinth;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
 
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public class Mapa {
     private static Mapa instanciaUnica;
@@ -19,19 +26,84 @@ public class Mapa {
     int rows;
     int cols;
 
+    private ArrayList<Chave> chaves = new ArrayList<>();
+    private Texture chaveTexture;
+    private int numChaves;
+
+//    public void criarChaves(){
+//        chaveTexture = new Texture(Gdx.files.internal("Chave.png"));
+//        this.numChaves = (worldHeight-1);
+//
+//
+//        Set<String> usedPositions = new HashSet<>();
+//
+//        for (int i = 0; i < numChaves; i++) {
+//            int x, y;
+//            String key;
+//            do {
+//                x = MathUtils.random(cols - 1);
+//                y = MathUtils.random(rows - 1);
+//                key = x + "," + y;
+//            } while (dadosDoMapa[y][x] != ' ' || usedPositions.contains(key));
+//            usedPositions.add(key);
+//
+////            boolean estadoInicial = (i % 2 == 0);
+////            Texture textura = estadoInicial ? texturaAberta : texturaFechada;
+//            Sprite sprite = new Sprite(chaveTexture);
+//
+////            dadosDoMapa[y][x] = estadoInicial ? ' ' : '\\';
+//
+//            float worldX = x * TILE_SIZE;
+//            float worldY = (dadosDoMapa.length - 1 - y) * TILE_SIZE;
+//
+//            sprite.setPosition(worldX, worldY);
+//            Chave chave = new Chave(chaveTexture, x, y);
+//
+////            int dono = (i < numChaves / 2) ? 0 : 1; // metade para cada jogador
+////            Porta porta = new Porta(texturaAberta, texturaFechada, estadoInicial, x, y, dono);
+////            portas.add(porta);
+//            chaves.add(chave);
+//        }
+//    }
+
+public void criarChaves() {
+    if (dadosDoMapa == null) return; // segurança extra
+
+    chaveTexture = new Texture(Gdx.files.internal("Chave.png"));
+    this.numChaves = Math.min(10, rows * cols / 20); // define máximo de chaves
+
+    Set<String> usedPositions = new HashSet<>();
+
+    for (int i = 0; i < numChaves; i++) {
+        int x, y;
+        String key;
+        do {
+            x = MathUtils.random(cols - 1);
+            y = MathUtils.random(rows - 1);
+            key = x + "," + y;
+        } while (dadosDoMapa[y][x] != ' ' || usedPositions.contains(key));
+        usedPositions.add(key);
+
+        Chave chave = new Chave(chaveTexture, x, y);
+        chaves.add(chave);
+
+        System.out.println("Chave criada em tile: (" + x + ", " + y + ")");
+    }
+}
+
+
+    public ArrayList<Chave> getChaves(){
+        return this.chaves;
+    }
+
     public void setDadosDoMapa(String mapTextName) {
-
-
         char[][] matriz = loadMap(mapTextName);
         this.dadosDoMapa = matriz;
-
-//        String[] lines = Gdx.files.internal(filename).readString().split("\n");
-//        int rows = lines.length;
-//        int cols = lines[0].length();
 
         worldWidth = TILE_SIZE * cols;
         worldHeight = TILE_SIZE * rows;
 
+        criarChaves();
     }
 
     public char[][] getDadosDoMapa() {
@@ -45,6 +117,7 @@ public class Mapa {
         //            throw new RuntimeException("Use getInstance() para acessar o Mapa!");
         //        }
 //        npcs = new ArrayList<>();
+
         instanciaUnica = this;
     }
 
@@ -142,5 +215,18 @@ public class Mapa {
     }
 
 
+    public void tirarChaveDoMapa(Chave chave) {
+        chaves.remove(chave);
+    }
+
+    public void drawChaves(SpriteBatch batch){
+        for (Chave chave : Mapa.getInstance().getChaves()) {
+            chave.draw(batch);
+        }
+    }
+
+    public int getNumChaves() {
+        return numChaves;
+    }
 }
 

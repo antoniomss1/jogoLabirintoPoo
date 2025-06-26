@@ -41,7 +41,7 @@ public class Transfigurador extends NPC {
         if (caminho == null || passoAtual >= caminho.size()) {
             recalcularCaminho();
             if (caminho.isEmpty()) {
-                System.out.println("Exploração completa. Resetando memória.");
+//                System.out.println("Exploração completa. Resetando memória.");
                 visitadosGlobalmente.clear();
                 recalcularCaminho();
                 if (caminho.isEmpty()) return;
@@ -84,7 +84,7 @@ public class Transfigurador extends NPC {
         // O caminho retornado pelo BFS já começa pelos vizinhos, então começamos do índice 0.
         passoAtual = 0;
 
-        System.out.println("Novo caminho: " + caminho);
+//        System.out.println("Novo caminho: " + caminho);
 
     }
 }

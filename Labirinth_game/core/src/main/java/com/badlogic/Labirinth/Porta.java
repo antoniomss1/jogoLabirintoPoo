@@ -11,10 +11,15 @@ public class Porta {
     int TILE_SIZE = Mapa.getInstance().TILE_SIZE;
     int rows = Mapa.getInstance().rows;
 
+    private Texture texturaAberta;
+    private Texture texturaFechada;
+
     public Porta(Texture texturaAberta, Texture texturaFechada, boolean estadoInicial, int x, int y, int dono) {
         this.estado = estadoInicial;
         this.posX = x;
         this.posY = y;
+        this.texturaAberta = texturaAberta;
+        this.texturaFechada = texturaFechada;
 
         Texture textura = estado ? texturaAberta : texturaFechada;
         this.sprite = new Sprite(textura);
@@ -24,9 +29,9 @@ public class Porta {
         this.dono = dono;
     }
 
-    public void alternar(Texture texturaAberta, Texture texturaFechada) {
+    public void alternar( ) {
         estado = !estado;
-        Texture novaTextura = estado ? texturaAberta : texturaFechada;
+        Texture novaTextura = estado ? this.texturaAberta : this.texturaFechada;
         sprite.setTexture(novaTextura);
         sprite.setBounds(sprite.getX(), sprite.getY(), novaTextura.getWidth(), novaTextura.getHeight());
 
@@ -65,5 +70,12 @@ public class Porta {
 
     public void setEstado(boolean novoEstado) {
         this.estado = novoEstado;
+    }
+    public Texture getTexturaAberta(){
+        return this.texturaAberta;
+    }
+
+    public Texture getTexturaFechada() {
+        return texturaFechada;
     }
 }

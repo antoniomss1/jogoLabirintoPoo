@@ -11,61 +11,43 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Portas {
-    private final Texture texturaAberta;
-    private final Texture texturaFechada;
+    private Texture texturaAberta;
+    private Texture texturaFechada;
     private final ArrayList<Porta> portas = new ArrayList<>();
     private int TILE_SIZE = Mapa.getInstance().TILE_SIZE;
     int size = 16;
 
-//    public Portas() {
-//        char[][] mapData = Mapa.getInstance().getDadosDoMapa();
-//        int rows = mapData.length;
-//        int cols = mapData[0].length;
-//
-//        texturaAberta = new Texture(Gdx.files.internal("porta_aberta.png"));
-//        texturaFechada = new Texture(Gdx.files.internal("porta_fechada.png"));
-//        portas = new ArrayList<>();
-//
-//        Set<String> ocupados = new HashSet<>();
-//
-//        int quantidade = 16;
-//        for (int i = 0; i < quantidade; i++) {
-//            int x, y;
-//            String key;
-//
-//            do {
-//                x = MathUtils.random(cols - 1);
-//                y = MathUtils.random(rows - 1);
-//                key = x + "," + y;
-//            } while (mapData[y][x] != ' ' || ocupados.contains(key));
-//
-//            ocupados.add(key);
-//
-//            boolean estadoInicial = (i % 2 == 0);
-//            char novoChar = estadoInicial ? ' ' : '\\';
-//            Mapa.getInstance().setTile(x, y, novoChar);
-//
-//            Porta porta = new Porta(texturaAberta, texturaFechada, estadoInicial, x, y, TILE_SIZE, rows);
-//            portas.add(porta);
-//        }
-//    }
 public Portas() {
     char[][] mapData = Mapa.getInstance().getDadosDoMapa();
     int rows = mapData.length;
     int cols = mapData[0].length;
 
     texturaAberta = new Texture(Gdx.files.internal("porta_aberta.png"));
-    texturaFechada = new Texture(Gdx.files.internal("porta_fechada.png"));
+//    texturaFechada = new Texture(Gdx.files.internal("porta_fechada.png"));
 
     Set<String> usedPositions = new HashSet<>();
 
     for (int i = 0; i < size; i++) {
         int x, y;
+        int dono = (i < size / 2) ? 0 : 1; // metade para cada jogador
+
+        if(i < size/2){
+            dono =0;
+            texturaFechada = new Texture(Gdx.files.internal("porta_fechada_J1.png"));
+            texturaAberta = new Texture(Gdx.files.internal("porta_aberta_J1.png"));
+        }
+        else{
+            texturaFechada = new Texture(Gdx.files.internal("porta_fechada.png"));
+            texturaAberta = new Texture(Gdx.files.internal("porta_aberta.png"));
+        }
         String key;
         do {
             x = MathUtils.random(cols - 1);
             y = MathUtils.random(rows - 1);
             key = x + "," + y;
+            if((x== Mapa.getInstance().getRows()-2 && y==1) || (x == 1) && (y == Mapa.getInstance().getCols()-3)){
+                continue;
+            }
         } while (mapData[y][x] != ' ' || usedPositions.contains(key));
         usedPositions.add(key);
 
@@ -80,7 +62,6 @@ public Portas() {
 
         sprite.setPosition(worldX, worldY);
 
-        int dono = (i < size / 2) ? 0 : 1; // metade para cada jogador
         Porta porta = new Porta(texturaAberta, texturaFechada, estadoInicial, x, y, dono);
         portas.add(porta);
     }
@@ -106,7 +87,7 @@ public void invertDoor(int i, int jogador) {
         boolean novoEstado = !porta.getEstado();
         porta.setEstado(novoEstado);
 
-        Texture novaTextura = novoEstado ? texturaAberta : texturaFechada;
+        Texture novaTextura = novoEstado ? porta.getTexturaAberta() : porta.getTexturaFechada();
         porta.getSprite().setTexture(novaTextura);
         porta.getSprite().setBounds(
             porta.getSprite().getX(),
@@ -121,7 +102,7 @@ public void invertDoor(int i, int jogador) {
 
         int j = (i % 2 == 0) ? i + 1 : i - 1;
         if (j < portas.size()) {
-            portas.get(j).alternar(texturaAberta, texturaFechada);
+            portas.get(j).alternar( );
         }
     }
 }
