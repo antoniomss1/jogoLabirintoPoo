@@ -114,7 +114,7 @@ public class GameScreen implements Screen {
         keyTexture = new Texture(Gdx.files.internal("Chave.png"));
 
         Mapa.iniciarMapa();
-        Mapa.getInstance().setDadosDoMapa("map2.txt");
+        Mapa.getInstance().setDadosDoMapa("map.txt");
         portas = new Portas();
         TILE_SIZE = Mapa.getInstance().TILE_SIZE;
         viewportJogador2 = new FillViewport(Mapa.getInstance().worldWidth , Mapa.getInstance().worldHeight);
