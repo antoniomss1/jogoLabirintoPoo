@@ -18,7 +18,7 @@ public class Jogador extends Character{
     float jogadorWidth;
     float jogadorHeight;
 
-    private float speed = 250f;
+    private float speed = 400f;
 
     private boolean wasTouched = false;
     Vector2 touchPos;

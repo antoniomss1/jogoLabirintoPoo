@@ -66,30 +66,30 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         batch = new SpriteBatch();
-                                                                    uiStage = new Stage(new ScreenViewport(), batch);
+                            uiStage = new Stage(new ScreenViewport(), batch);
 
-                                                                    generator = new FreeTypeFontGenerator(Gdx.files.internal("Babynotes.otf"));
-                                                                    FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-                                                                    parameter.size = 26;
-                                                                    parameter.color = Color.BLACK;
-                                                                    letterFont = generator.generateFont(parameter);
+                            generator = new FreeTypeFontGenerator(Gdx.files.internal("Babynotes.otf"));
+                            FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+                            parameter.size = 26;
+                            parameter.color = Color.BLACK;
+                            letterFont = generator.generateFont(parameter);
 
-                                                                    skin = new Skin(Gdx.files.internal("uiskin.json"));
-                                                                    backgroundLetter = new Texture(Gdx.files.internal("background_letter.png"));
-                                                                    TextureRegionDrawable backgroundDrawable = new TextureRegionDrawable(backgroundLetter);
+                            skin = new Skin(Gdx.files.internal("uiskin.json"));
+                            backgroundLetter = new Texture(Gdx.files.internal("background_letter.png"));
+                            TextureRegionDrawable backgroundDrawable = new TextureRegionDrawable(backgroundLetter);
 
-                                                                    skin.get("default", TextField.TextFieldStyle.class).background = backgroundDrawable;
-                                                                    skin.add("default-font", letterFont);
-                                                                    skin.get("default", TextField.TextFieldStyle.class).font = letterFont;
+                            skin.get("default", TextField.TextFieldStyle.class).background = backgroundDrawable;
+                            skin.add("default-font", letterFont);
+                            skin.get("default", TextField.TextFieldStyle.class).font = letterFont;
 
-                                                                    letterBackgroundTexture = new Texture(Gdx.files.internal("letter_view.png"));
-                                                                    Texture tex = new Texture("botao_carta.png");
-                                                                    ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
-                                                                    style.imageUp = new TextureRegionDrawable(new TextureRegion(tex));
-                                                                    style.imageDown = style.imageUp;
-                                                                    button = new ImageButton(style);
-                                                                    button.setSize(100, 90);
-                                                                    button.setPosition(20, 20);
+                            letterBackgroundTexture = new Texture(Gdx.files.internal("letter_view.png"));
+                            Texture tex = new Texture("botao_carta.png");
+                            ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
+                            style.imageUp = new TextureRegionDrawable(new TextureRegion(tex));
+                            style.imageDown = style.imageUp;
+                            button = new ImageButton(style);
+                            button.setSize(100, 90);
+                            button.setPosition(20, 20);
 
         wallTexture = new Texture(Gdx.files.internal("wall.png"));
         floorTexture = new Texture(Gdx.files.internal("floor.png"));
@@ -170,36 +170,61 @@ public class GameScreen implements Screen {
         uiStage.getViewport().apply();
         uiStage.act(Gdx.graphics.getDeltaTime()); // Atualiza a UI (importante para cursor, etc.)
         uiStage.draw();
+
+//        input();
+//        logic();
+//
+//        ScreenUtils.clear(Color.BLACK);
+//
+//        // --- Desenha a primeira viewport (jogador 1) ---
+//        drawGame(viewport);
+//
+//        // --- Desenha a minimapa ---
+//        drawMiniMap();
+//
+//        // --- Desenha a segunda viewport (jogador 2) ---
+//        drawGame(viewportJogador2);
+//
+//        // --- ATUALIZA E DESENHA A UI (que fica por cima de tudo) ---
+//        uiStage.getViewport().apply();
+//        uiStage.act(Gdx.graphics.getDeltaTime()); // Atualiza a UI (importante para cursor, etc.)
+//        uiStage.draw();
+
     }
 
     private void input(){
-        mago.updatePlayer(viewport, portas);
-        mago2.updatePlayer(viewportJogador2, portas);
-        transfigurador.update(Gdx.graphics.getDeltaTime());
+
+
+//        mago.updatePlayer(viewport, portas);
+//        mago2.updatePlayer(viewportJogador2, portas);
+
+//        transfigurador.update(Gdx.graphics.getDeltaTime());
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.P)){
+            camera = !camera;
+        }
         if (!isLetterWriting) {
             mago.updatePlayer(viewport, portas);
             mago2.updatePlayer(viewportJogador2, portas);
             transfigurador.update(Gdx.graphics.getDeltaTime());
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.P)){
-            camera = !camera;
-        }
+
     }
 
     private void logic() {
-        mago.atualizarCamera(miniMapa);
-
-        if(!camera){
-            mago.atualizarCamera(viewportJogador2);
-            mago2.atualizarCamera(viewport);
-        }
-        else{
-            mago.atualizarCamera(viewport);
-            mago2.atualizarCamera(viewportJogador2);
-        }
+//        mago.atualizarCamera(miniMapa);
+//
+//        if(!camera){
+//            mago.atualizarCamera(viewportJogador2);
+//            mago2.atualizarCamera(viewport);
+//        }
+//        else{
+//            mago.atualizarCamera(viewport);
+//            mago2.atualizarCamera(viewportJogador2);
+//        }
 
         if (!isLetterWriting) {
-            mago.atualizarCamera(miniMapa);
+//            mago.atualizarCamera(miniMapa);
 
             if(Gdx.input.isKeyJustPressed(Input.Keys.P)){
                 camera = !camera;
@@ -214,6 +239,66 @@ public class GameScreen implements Screen {
             }
         }
 
+    }
+
+    private void drawMiniMap() {
+        miniMapa.apply();
+        int factor = 5;
+        // Posição corrigida para o canto inferior direito da primeira viewport
+        Gdx.gl.glViewport(
+            viewport.getScreenX() + viewport.getScreenWidth() - factor * TILE_SIZE - 10,
+            viewport.getScreenY() + 10,
+            TILE_SIZE * factor,
+            TILE_SIZE * factor
+        );
+
+        batch.setProjectionMatrix(miniMapa.getCamera().combined);
+        batch.begin();
+        drawGameContent(batch);
+        batch.end();
+
+        // Restaura o viewport global para não bagunçar o desenho seguinte
+        Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    }
+
+    // Método auxiliar para desenhar o conteúdo do jogo
+    private void drawGameContent(SpriteBatch batch) {
+        for (int y = 0; y < Mapa.getInstance().getDadosDoMapa().length; y++) {
+            for (int x = 0; x < Mapa.getInstance().getDadosDoMapa()[y].length; x++) {
+                Texture tex = getTextureForTile(Mapa.getInstance().getDadosDoMapa()[y][x]);
+                if (tex != null) {
+                    batch.draw(tex, x * TILE_SIZE, (Mapa.getInstance().getDadosDoMapa().length - 1 - y) * TILE_SIZE);
+                }
+            }
+        }
+        portas.draw(batch);
+        mago.draw(batch);
+        mago2.draw(batch);
+        transfigurador.draw(batch);
+        key.draw(batch);
+    }
+
+    // Desenha em uma viewport específica
+    private void drawGame(Viewport vp) {
+        vp.apply();
+        batch.setProjectionMatrix(vp.getCamera().combined);
+        batch.begin();
+        drawGameContent(batch);
+        batch.end();
+    }
+
+    private Texture getTextureForTile(char tileChar) {
+        switch (tileChar) {
+            case 'a': return floorATexture; case 'b': return floorBTexture;
+            case 'c': return floorCTexture; case 'd': return floorDTexture;
+            case 'e': return floorETexture; case 'h': return floorHTexture;
+            case 't': return floorTTexture; case 'u': return floorUTexture;
+            case 'v': return floorVTexture; case 'w': return floorWTexture;
+            case 'x': return floorXTexture; case '+': return floorPTexture;
+            case 'g': return floorGTexture; case 'f': return floorFTexture;
+            case 'i': return floorITexture; case ' ': return floorTexture;
+            default: return null;
+        }
     }
 
     private void draw(){
